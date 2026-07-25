@@ -10,18 +10,29 @@ const empty = {
   expiration: '',
 }
 
-// A bottom-sheet "order ticket" for writing a new item into the ledger.
-export function AddItemSheet({ open, onClose, onAdd }) {
+// A bottom-sheet "ticket" for writing a new item into the ledger — or editing
+// an existing one when `item` is provided.
+export function AddItemSheet({ open, onClose, onAdd, item = null, onSave, onDelete }) {
+  const editing = Boolean(item)
   const [form, setForm] = useState(empty)
   const nameRef = useRef(null)
 
   useEffect(() => {
-    if (open) {
-      setForm(empty)
-      const t = setTimeout(() => nameRef.current?.focus(), 120)
-      return () => clearTimeout(t)
-    }
-  }, [open])
+    if (!open) return
+    setForm(
+      item
+        ? {
+            name: item.name,
+            category: item.category,
+            quantity: String(item.quantity ?? 1),
+            unit: item.unit || 'pcs',
+            expiration: item.expiration || '',
+          }
+        : empty,
+    )
+    const t = setTimeout(() => nameRef.current?.focus(), 120)
+    return () => clearTimeout(t)
+  }, [open, item])
 
   useEffect(() => {
     if (!open) return
@@ -40,7 +51,22 @@ export function AddItemSheet({ open, onClose, onAdd }) {
       nameRef.current?.focus()
       return
     }
-    onAdd(form)
+    if (editing) {
+      onSave(item.id, {
+        name: form.name.trim(),
+        category: form.category,
+        quantity: Number(form.quantity) || 0,
+        unit: form.unit,
+        expiration: form.expiration,
+      })
+    } else {
+      onAdd(form)
+    }
+    onClose()
+  }
+
+  const remove = () => {
+    onDelete(item.id)
     onClose()
   }
 
@@ -52,12 +78,12 @@ export function AddItemSheet({ open, onClose, onAdd }) {
         onSubmit={submit}
         role="dialog"
         aria-modal="true"
-        aria-label="Add item to the ledger"
+        aria-label={editing ? 'Edit item' : 'Add item to the ledger'}
       >
         <div className="ticket__grip" aria-hidden="true" />
         <div className="ticket__head">
-          <h2 className="ticket__title">New entry</h2>
-          <span className="ticket__no">{todayISO()}</span>
+          <h2 className="ticket__title">{editing ? 'Edit entry' : 'New entry'}</h2>
+          <span className="ticket__no">{editing ? 'Update' : todayISO()}</span>
         </div>
 
         <label className="field">
@@ -118,7 +144,7 @@ export function AddItemSheet({ open, onClose, onAdd }) {
           <input
             className="field__input"
             type="date"
-            min={todayISO()}
+            min={editing ? undefined : todayISO()}
             value={form.expiration}
             onChange={set('expiration')}
           />
@@ -126,11 +152,17 @@ export function AddItemSheet({ open, onClose, onAdd }) {
         </label>
 
         <div className="ticket__actions">
-          <button type="button" className="btn btn--ghost" onClick={onClose}>
-            Discard
-          </button>
+          {editing ? (
+            <button type="button" className="btn btn--danger" onClick={remove}>
+              Delete
+            </button>
+          ) : (
+            <button type="button" className="btn btn--ghost" onClick={onClose}>
+              Discard
+            </button>
+          )}
           <button type="submit" className="btn btn--primary">
-            File it
+            {editing ? 'Save' : 'File it'}
           </button>
         </div>
       </form>

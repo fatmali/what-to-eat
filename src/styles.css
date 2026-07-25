@@ -344,6 +344,7 @@ code {
   align-self: start;
   width: 46px;
   height: 46px;
+  padding: 0;
   display: grid;
   place-items: center;
   border-radius: var(--r-md);
@@ -353,6 +354,11 @@ code {
   color: var(--cat);
   background: color-mix(in srgb, var(--cat) 15%, #000);
   border: 1px solid color-mix(in srgb, var(--cat) 32%, transparent);
+  cursor: pointer;
+  transition: transform 0.12s ease;
+}
+.entry__mono:active {
+  transform: scale(0.94);
 }
 
 .entry__col {
@@ -370,6 +376,11 @@ code {
 .entry__name {
   margin: 0;
   min-width: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
   font-family: var(--serif);
   font-variation-settings: 'opsz' 34, 'wght' 460, 'SOFT' 0, 'WONK' 0;
   font-size: 20px;
@@ -380,6 +391,15 @@ code {
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+.entry__edit {
+  margin-left: 7px;
+  font-size: 12px;
+  color: var(--text-3);
+  vertical-align: middle;
+}
+.entry__name:active .entry__edit {
+  color: var(--fresh);
 }
 .entry__meta {
   margin: 0;
@@ -844,6 +864,14 @@ select.field__input {
 }
 .btn--ghost {
   background: transparent;
+}
+.btn--danger {
+  background: transparent;
+  color: var(--expired);
+  border-color: color-mix(in srgb, var(--expired) 40%, transparent);
+}
+.btn--danger:active {
+  background: color-mix(in srgb, var(--expired) 14%, #000);
 }
 
 /* ---------- Specials (recipes) ---------- */

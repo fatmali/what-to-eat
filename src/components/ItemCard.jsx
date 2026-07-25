@@ -3,19 +3,28 @@ import { ExpiryBadge } from './ExpiryBadge.jsx'
 
 // A single ledger entry: monogram tile, name, meta line, expiry chip and the
 // quantity / used controls.
-export function ItemCard({ item, index = 0, onChangeQty, onMarkUsed }) {
+export function ItemCard({ item, index = 0, onChangeQty, onMarkUsed, onEdit }) {
   const cat = CATEGORIES[item.category] ?? CATEGORIES.food
   const initial = (item.name.trim()[0] ?? '?').toUpperCase()
 
   return (
     <li className={`entry entry--${item.category}`} style={{ '--i': index }}>
-      <div className="entry__mono" aria-hidden="true">
+      <button
+        className="entry__mono"
+        onClick={() => onEdit(item)}
+        aria-label={`Edit ${item.name}`}
+      >
         {initial}
-      </div>
+      </button>
 
       <div className="entry__col">
         <div className="entry__top">
-          <h3 className="entry__name">{item.name}</h3>
+          <button className="entry__name" onClick={() => onEdit(item)}>
+            {item.name}
+            <span className="entry__edit" aria-hidden="true">
+              ✎
+            </span>
+          </button>
           <ExpiryBadge expiration={item.expiration} />
         </div>
 

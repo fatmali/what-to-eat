@@ -21,6 +21,7 @@ export default function App() {
   const notify = useNotifications(fridge.active)
   const [tab, setTab] = useState('fridge')
   const [sheetOpen, setSheetOpen] = useState(false)
+  const [editItem, setEditItem] = useState(null)
   const [scanOpen, setScanOpen] = useState(false)
   const [expiringFilter, setExpiringFilter] = useState(false)
 
@@ -67,6 +68,7 @@ export default function App() {
               items={fridge.active}
               onChangeQty={fridge.changeQuantity}
               onMarkUsed={fridge.markUsed}
+              onEdit={setEditItem}
               onAdd={() => setSheetOpen(true)}
               initialFilter={expiringFilter ? 'expiring' : 'all'}
             />
@@ -115,7 +117,17 @@ export default function App() {
         </div>
       </nav>
 
-      <AddItemSheet open={sheetOpen} onClose={() => setSheetOpen(false)} onAdd={fridge.addItem} />
+      <AddItemSheet
+        open={sheetOpen || Boolean(editItem)}
+        item={editItem}
+        onClose={() => {
+          setSheetOpen(false)
+          setEditItem(null)
+        }}
+        onAdd={fridge.addItem}
+        onSave={fridge.updateItem}
+        onDelete={fridge.removeItem}
+      />
       <ScanReceiptSheet open={scanOpen} onClose={() => setScanOpen(false)} onAdd={fridge.addItem} />
     </div>
   )

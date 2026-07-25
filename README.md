@@ -8,9 +8,10 @@ always know what to eat — and never let food quietly expire in the back again.
 - **Fridge tracker** — log food, meal prep, and leftovers with quantity, unit, and
   expiration date. Everything is grouped and sorted so the most urgent items float
   to the top.
-- **Add & use items** — add items via a bottom-sheet form, adjust quantities with a
-  stepper, and mark things as **used** when they're gone (used items are archived,
-  not deleted).
+- **Add, edit & use items** — add items via a bottom-sheet form, **tap an item's
+  name to edit** everything (name, category, quantity, unit, expiry) or delete it,
+  adjust quantities with a stepper, and mark things as **used** when they're gone
+  (used items are archived, not deleted).
 - **Scan a receipt** — snap (or upload) a grocery receipt and it's read **on your
   device** with Tesseract.js OCR; the detected items become an editable list you
   review — tick what to keep, fix names, set the category, and adjust a per-item

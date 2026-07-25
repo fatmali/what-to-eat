@@ -10,7 +10,7 @@ const FILTERS = [
 ]
 
 // The main ledger screen: an index of filters + the sorted list of entries.
-export function FridgeView({ items, onChangeQty, onMarkUsed, onAdd, initialFilter = 'all' }) {
+export function FridgeView({ items, onChangeQty, onMarkUsed, onEdit, onAdd, initialFilter = 'all' }) {
   const [filter, setFilter] = useState(initialFilter)
 
   const counts = useMemo(() => {
@@ -60,6 +60,7 @@ export function FridgeView({ items, onChangeQty, onMarkUsed, onAdd, initialFilte
               index={i}
               onChangeQty={onChangeQty}
               onMarkUsed={onMarkUsed}
+              onEdit={onEdit}
             />
           ))}
         </ul>
