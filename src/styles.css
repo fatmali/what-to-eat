@@ -202,6 +202,176 @@ code {
   padding: 14px 18px calc(var(--foot-h) + var(--safe-bottom) + 100px);
 }
 
+/* ---------- Today card (daily meal log) ---------- */
+.today {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  text-align: left;
+  padding: 14px 16px;
+  margin-bottom: 14px;
+  border-radius: var(--r-card);
+  border: 1px solid rgba(87, 224, 138, 0.35);
+  background: linear-gradient(180deg, rgba(87, 224, 138, 0.12), transparent), var(--surface);
+  transition: transform 0.12s ease;
+}
+.today:active {
+  transform: scale(0.99);
+}
+.today--done {
+  border-color: var(--hair);
+  background: var(--surface);
+}
+.today__body {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+.today__streak {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fresh);
+}
+.today--done .today__streak {
+  color: var(--text-3);
+}
+.today__prompt {
+  font-family: var(--serif);
+  font-variation-settings: 'opsz' 30, 'wght' 450;
+  font-size: 17px;
+  color: var(--text);
+}
+.today__cta {
+  flex: none;
+  padding: 9px 14px;
+  border-radius: var(--r-pill);
+  background: var(--fresh);
+  color: #05140b;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.03em;
+}
+.today--done .today__cta {
+  background: var(--surface-2);
+  color: var(--text-2);
+  border: 1px solid var(--hair-strong);
+}
+
+/* ---------- Cook-log sheet ---------- */
+.cook-hint {
+  margin: 0 0 14px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-2);
+}
+.cook-list {
+  list-style: none;
+  margin: 0 0 16px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 42vh;
+  overflow-y: auto;
+}
+.cook-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 9px 11px;
+  background: var(--surface-2);
+  border: 1px solid var(--hair);
+  border-radius: var(--r-md);
+}
+.cook-row--on {
+  border-color: rgba(87, 224, 138, 0.45);
+}
+.cook-row__name {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.cook-row__title {
+  font-family: var(--serif);
+  font-variation-settings: 'opsz' 24, 'wght' 460;
+  font-size: 15px;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cook-row__qty {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-3);
+}
+.cook-amounts {
+  flex: none;
+  display: flex;
+  gap: 4px;
+  background: var(--bg);
+  border: 1px solid var(--hair);
+  border-radius: var(--r-pill);
+  padding: 3px;
+}
+.cook-amt {
+  padding: 6px 9px;
+  border: none;
+  background: transparent;
+  border-radius: var(--r-pill);
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: var(--text-2);
+  white-space: nowrap;
+}
+.cook-amt--on {
+  background: var(--fresh);
+  color: #05140b;
+}
+.cook-leftover {
+  margin-bottom: 16px;
+}
+.cook-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 4px;
+  background: none;
+  border: none;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-2);
+}
+.cook-toggle__box {
+  width: 22px;
+  height: 22px;
+  border-radius: 7px;
+  border: 1.5px solid var(--hair-strong);
+  display: grid;
+  place-items: center;
+  color: #05140b;
+  font-size: 12px;
+}
+.cook-toggle--on .cook-toggle__box {
+  background: var(--fresh);
+  border-color: var(--fresh);
+}
+.cook-leftover__row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 8px;
+}
+
 /* ---------- Notice (alert banner) ---------- */
 .notice {
   width: 100%;

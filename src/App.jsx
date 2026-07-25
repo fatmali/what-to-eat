@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useFridge } from './hooks/useFridge.js'
 import { useNotifications } from './hooks/useNotifications.js'
+import { useMeals } from './hooks/useMeals.js'
 import { needsAttention } from './lib/expiry.js'
 import { ONBOARDED_KEY } from './lib/constants.js'
 import { seedItems } from './lib/seed.js'
@@ -10,6 +11,8 @@ import { ShoppingView } from './components/ShoppingView.jsx'
 import { AddItemSheet } from './components/AddItemSheet.jsx'
 import { ScanReceiptSheet } from './components/ScanReceiptSheet.jsx'
 import { Onboarding } from './components/Onboarding.jsx'
+import { CookSheet } from './components/CookSheet.jsx'
+import { TodayCard } from './components/TodayCard.jsx'
 import { AlertBanner } from './components/AlertBanner.jsx'
 import { NotifyButton } from './components/NotifyButton.jsx'
 
@@ -23,10 +26,12 @@ const DATE_FMT = new Intl.DateTimeFormat('en-GB', {
 export default function App() {
   const fridge = useFridge()
   const notify = useNotifications(fridge.active)
+  const meals = useMeals()
   const [tab, setTab] = useState('fridge')
   const [sheetOpen, setSheetOpen] = useState(false)
   const [editItem, setEditItem] = useState(null)
   const [scanOpen, setScanOpen] = useState(false)
+  const [cookOpen, setCookOpen] = useState(false)
   const [expiringFilter, setExpiringFilter] = useState(false)
   const [onboarded, setOnboarded] = useState(() => {
     try {
@@ -91,6 +96,11 @@ export default function App() {
       <main className="main">
         {tab === 'fridge' && (
           <>
+            <TodayCard
+              streak={meals.streak}
+              loggedToday={meals.loggedToday}
+              onLog={() => setCookOpen(true)}
+            />
             <AlertBanner items={fridge.active} onReview={reviewExpiring} />
             <FridgeView
               key={expiringFilter ? 'expiring' : 'default'}
@@ -175,6 +185,15 @@ export default function App() {
         onDelete={fridge.removeItem}
       />
       <ScanReceiptSheet open={scanOpen} onClose={() => setScanOpen(false)} onAdd={fridge.addItem} />
+      <CookSheet
+        open={cookOpen}
+        onClose={() => setCookOpen(false)}
+        active={fridge.active}
+        markUsed={fridge.markUsed}
+        updateItem={fridge.updateItem}
+        addItem={fridge.addItem}
+        logMeal={meals.logMeal}
+      />
 
       {showOnboarding && (
         <Onboarding

@@ -15,6 +15,14 @@ always know what to eat — and never let food quietly expire in the back again.
   List** tab as something *to buy*. Tap **Got it** to put it back in the fridge, or
   remove it. The list also has a **Running low** section for items at/under a
   low-stock threshold, so you can add them before they run out.
+- **Fast onboarding** — first-run users start empty and are greeted with three
+  low-friction ways to stock the fridge: **scan a receipt**, **tap common
+  staples**, or **paste a list** — with expiry dates auto-estimated from a
+  shelf-life table (by item keyword / category) so nothing has to be typed.
+- **Daily meal log + streak** — a **Today** card nudges you to log what you cooked;
+  the quick sheet lets you pick what you used and roughly how much (*a bit / half /
+  used up*), which is deducted from the fridge, plus save **leftovers** (with a
+  photo). Logging keeps a **streak** to build the habit.
 - **Item photos** — give any item a picture: **snap/choose one** (downscaled to a
   small thumbnail and stored on-device) or **auto-fetch by name** from Open Food
   Facts (keyless, best for packaged groceries; needs internet). The photo shows on
