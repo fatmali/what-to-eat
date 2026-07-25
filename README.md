@@ -13,8 +13,10 @@ always know what to eat — and never let food quietly expire in the back again.
   not deleted).
 - **Scan a receipt** — snap (or upload) a grocery receipt and it's read **on your
   device** with Tesseract.js OCR; the detected items become an editable list you
-  review — tick what to keep, fix names, set categories — before filing them into
-  the fridge. The photo never leaves the phone.
+  review — tick what to keep, fix names, set the category, and adjust a per-item
+  **expiry** (pre-filled so reminders still fire). You can **scan another** receipt
+  to append more items (deduped) before filing them all into the fridge. The photo
+  never leaves the phone.
 - **Expiration awareness** — color-coded badges (fresh → expiring soon → today →
   expired), a summary alert banner, and an "Expiring" filter, plus a live count
   badge on the Fridge tab.

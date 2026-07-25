@@ -93,24 +93,26 @@ export default function App() {
       )}
 
       <nav className="footer-index" aria-label="Primary">
-        <button
-          className={`foot ${tab === 'fridge' ? 'foot--on' : ''}`}
-          onClick={() => {
-            setTab('fridge')
-            setExpiringFilter(false)
-          }}
-          aria-current={tab === 'fridge'}
-        >
-          <span className="foot__label">The Ledger</span>
-          {attentionCount > 0 && <span className="foot__badge">{attentionCount}</span>}
-        </button>
-        <button
-          className={`foot ${tab === 'recipes' ? 'foot--on' : ''}`}
-          onClick={() => setTab('recipes')}
-          aria-current={tab === 'recipes'}
-        >
-          <span className="foot__label">The Specials</span>
-        </button>
+        <div className="footer-index__inner">
+          <button
+            className={`foot ${tab === 'fridge' ? 'foot--on' : ''}`}
+            onClick={() => {
+              setTab('fridge')
+              setExpiringFilter(false)
+            }}
+            aria-current={tab === 'fridge'}
+          >
+            <span className="foot__label">The Ledger</span>
+            {attentionCount > 0 && <span className="foot__badge">{attentionCount}</span>}
+          </button>
+          <button
+            className={`foot ${tab === 'recipes' ? 'foot--on' : ''}`}
+            onClick={() => setTab('recipes')}
+            aria-current={tab === 'recipes'}
+          >
+            <span className="foot__label">The Specials</span>
+          </button>
+        </div>
       </nav>
 
       <AddItemSheet open={sheetOpen} onClose={() => setSheetOpen(false)} onAdd={fridge.addItem} />

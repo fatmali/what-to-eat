@@ -2,11 +2,16 @@ import { useEffect, useRef, useState } from 'react'
 import { CATEGORY_ORDER, CATEGORIES } from '../lib/constants.js'
 import { recognizeText } from '../lib/ocr.js'
 import { parseReceipt } from '../lib/receipt.js'
+import { isoInDays, todayISO } from '../lib/expiry.js'
 
 let uid = 0
 
+// Default shelf life (days from today) used to pre-fill each scanned item's
+// expiry so it still triggers reminders — the user can adjust or clear it.
+const DEFAULT_SHELF_DAYS = 7
+
 // Bottom-sheet flow: photograph a receipt → OCR on-device → review/edit the
-// detected items → file the chosen ones into the fridge.
+// detected items (name, category, quantity, expiry) → file the chosen ones.
 export function ScanReceiptSheet({ open, onClose, onAdd }) {
   const [phase, setPhase] = useState('intro') // intro | working | review | error
   const [progress, setProgress] = useState(0)
@@ -36,34 +41,51 @@ export function ScanReceiptSheet({ open, onClose, onAdd }) {
     const file = e.target.files?.[0]
     e.target.value = '' // allow re-picking the same file
     if (!file) return
+    const hadRows = rows.length > 0
     setPhase('working')
     setProgress(0)
     try {
       const text = await recognizeText(file, setProgress)
       const items = parseReceipt(text)
       if (items.length === 0) {
-        setError("Couldn't make out any items. Try a flatter, brighter photo.")
-        setPhase('error')
+        // On a first scan show the error screen; on a re-scan keep what we have.
+        if (hadRows) {
+          setError('')
+          setPhase('review')
+        } else {
+          setError("Couldn't make out any items. Try a flatter, brighter photo.")
+          setPhase('error')
+        }
         return
       }
-      setRows(
-        items.map((it) => ({
-          id: ++uid,
-          include: true,
-          name: it.name,
-          category: 'food',
-          quantity: it.quantity,
-        })),
-      )
+      setRows((prev) => {
+        const seen = new Set(prev.map((r) => r.name.trim().toLowerCase()))
+        const fresh = items
+          .filter((it) => !seen.has(it.name.trim().toLowerCase()))
+          .map((it) => ({
+            id: ++uid,
+            include: true,
+            name: it.name,
+            category: 'food',
+            quantity: it.quantity,
+            expiration: isoInDays(DEFAULT_SHELF_DAYS),
+          }))
+        return [...prev, ...fresh]
+      })
       setPhase('review')
     } catch (err) {
       console.error(err)
-      setError('Something went wrong reading that image.')
-      setPhase('error')
+      if (hadRows) {
+        setPhase('review')
+      } else {
+        setError('Something went wrong reading that image.')
+        setPhase('error')
+      }
     }
   }
 
   const patch = (id, next) => setRows((rs) => rs.map((r) => (r.id === id ? { ...r, ...next } : r)))
+  const removeRow = (id) => setRows((rs) => rs.filter((r) => r.id !== id))
   const cycleCat = (id) =>
     setRows((rs) =>
       rs.map((r) => {
@@ -76,7 +98,13 @@ export function ScanReceiptSheet({ open, onClose, onAdd }) {
   const chosen = rows.filter((r) => r.include && r.name.trim())
   const commit = () => {
     for (const r of chosen) {
-      onAdd({ name: r.name, category: r.category, quantity: r.quantity, unit: 'pcs', expiration: '' })
+      onAdd({
+        name: r.name,
+        category: r.category,
+        quantity: r.quantity,
+        unit: 'pcs',
+        expiration: r.expiration || '',
+      })
     }
     onClose()
   }
@@ -93,7 +121,11 @@ export function ScanReceiptSheet({ open, onClose, onAdd }) {
         <div className="ticket__grip" aria-hidden="true" />
         <div className="ticket__head">
           <h2 className="ticket__title">Scan a receipt</h2>
-          {phase === 'review' && <span className="ticket__no">{rows.length} found</span>}
+          {phase === 'review' && (
+            <span className="ticket__no">
+              {rows.length} item{rows.length === 1 ? '' : 's'}
+            </span>
+          )}
         </div>
 
         <input
@@ -139,48 +171,72 @@ export function ScanReceiptSheet({ open, onClose, onAdd }) {
 
         {phase === 'review' && (
           <>
-            <p className="scan-review__hint">Tick what to add, fix any names, set a category.</p>
+            <div className="scan-review__top">
+              <p className="scan-review__hint">Tick what to add · edit names, category, expiry.</p>
+              <button className="scan-again" onClick={() => fileRef.current?.click()}>
+                + Scan another
+              </button>
+            </div>
             <ul className="scan-list">
               {rows.map((r) => {
                 const cat = CATEGORIES[r.category]
                 return (
                   <li key={r.id} className={`scan-row ${r.include ? '' : 'scan-row--off'}`}>
-                    <button
-                      className={`scan-check ${r.include ? 'scan-check--on' : ''}`}
-                      onClick={() => patch(r.id, { include: !r.include })}
-                      aria-pressed={r.include}
-                      aria-label={r.include ? `Exclude ${r.name}` : `Include ${r.name}`}
-                    >
-                      {r.include ? '✓' : ''}
-                    </button>
-                    <input
-                      className="scan-name"
-                      value={r.name}
-                      onChange={(e) => patch(r.id, { name: e.target.value })}
-                      aria-label="Item name"
-                    />
-                    <button
-                      className={`scan-cat scan-cat--${r.category}`}
-                      onClick={() => cycleCat(r.id)}
-                      aria-label={`Category: ${cat.label}. Tap to change.`}
-                    >
-                      <span className="scan-cat__dot" aria-hidden="true" />
-                      {cat.label}
-                    </button>
-                    <div className="scan-qty">
+                    <div className="scan-row__main">
                       <button
-                        onClick={() => patch(r.id, { quantity: Math.max(1, r.quantity - 1) })}
-                        aria-label="Decrease quantity"
+                        className={`scan-check ${r.include ? 'scan-check--on' : ''}`}
+                        onClick={() => patch(r.id, { include: !r.include })}
+                        aria-pressed={r.include}
+                        aria-label={r.include ? `Exclude ${r.name}` : `Include ${r.name}`}
                       >
-                        –
+                        {r.include ? '✓' : ''}
                       </button>
-                      <span>{r.quantity}</span>
+                      <input
+                        className="scan-name"
+                        value={r.name}
+                        onChange={(e) => patch(r.id, { name: e.target.value })}
+                        aria-label="Item name"
+                      />
                       <button
-                        onClick={() => patch(r.id, { quantity: Math.min(99, r.quantity + 1) })}
-                        aria-label="Increase quantity"
+                        className="scan-remove"
+                        onClick={() => removeRow(r.id)}
+                        aria-label={`Remove ${r.name}`}
                       >
-                        +
+                        ×
                       </button>
+                    </div>
+                    <div className="scan-row__meta">
+                      <button
+                        className={`scan-cat scan-cat--${r.category}`}
+                        onClick={() => cycleCat(r.id)}
+                        aria-label={`Category: ${cat.label}. Tap to change.`}
+                      >
+                        <span className="scan-cat__dot" aria-hidden="true" />
+                        {cat.label}
+                      </button>
+                      <div className="scan-qty">
+                        <button
+                          onClick={() => patch(r.id, { quantity: Math.max(1, r.quantity - 1) })}
+                          aria-label="Decrease quantity"
+                        >
+                          –
+                        </button>
+                        <span>{r.quantity}</span>
+                        <button
+                          onClick={() => patch(r.id, { quantity: Math.min(99, r.quantity + 1) })}
+                          aria-label="Increase quantity"
+                        >
+                          +
+                        </button>
+                      </div>
+                      <input
+                        className="scan-date"
+                        type="date"
+                        min={todayISO()}
+                        value={r.expiration}
+                        onChange={(e) => patch(r.id, { expiration: e.target.value })}
+                        aria-label={`Expiry date for ${r.name}`}
+                      />
                     </div>
                   </li>
                 )

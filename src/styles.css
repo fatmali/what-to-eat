@@ -607,22 +607,25 @@ code {
   color: var(--fresh);
 }
 
-/* ---------- Footer nav ---------- */
+/* ---------- Footer nav: a full-width bar docked at the very bottom ---------- */
 .footer-index {
   position: fixed;
   left: 0;
   right: 0;
   bottom: 0;
   z-index: 30;
-  height: calc(var(--foot-h) + var(--safe-bottom));
-  padding: 8px 12px var(--safe-bottom);
-  max-width: 540px;
-  margin: 0 auto;
-  display: flex;
-  gap: 8px;
-  background: rgba(0, 0, 0, 0.85);
+  padding-bottom: var(--safe-bottom);
+  background: rgba(0, 0, 0, 0.92);
   backdrop-filter: blur(14px);
   border-top: 1px solid var(--hair);
+}
+.footer-index__inner {
+  max-width: 540px;
+  margin: 0 auto;
+  height: var(--foot-h);
+  padding: 8px 12px;
+  display: flex;
+  gap: 8px;
 }
 .foot {
   flex: 1;
@@ -1010,12 +1013,34 @@ select.field__input {
   transition: width 0.3s ease;
 }
 
+.scan-review__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
 .scan-review__hint {
-  margin: 0 0 12px;
+  margin: 0;
   font-family: var(--mono);
   font-size: 11px;
   letter-spacing: 0.02em;
   color: var(--text-2);
+}
+.scan-again {
+  flex: none;
+  padding: 7px 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--hair-strong);
+  border-radius: var(--r-pill);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.03em;
+  color: var(--fresh);
+  transition: transform 0.12s ease;
+}
+.scan-again:active {
+  transform: scale(0.95);
 }
 .scan-list {
   list-style: none;
@@ -1023,22 +1048,33 @@ select.field__input {
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  max-height: 46vh;
+  gap: 9px;
+  max-height: 44vh;
   overflow-y: auto;
 }
 .scan-row {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 7px;
+  flex-direction: column;
+  gap: 9px;
+  padding: 11px;
   background: var(--surface-2);
   border: 1px solid var(--hair);
   border-radius: var(--r-md);
   transition: opacity 0.15s ease;
 }
 .scan-row--off {
-  opacity: 0.4;
+  opacity: 0.42;
+}
+.scan-row__main {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.scan-row__meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-left: 35px;
 }
 .scan-check {
   flex: none;
@@ -1061,25 +1097,40 @@ select.field__input {
 .scan-name {
   flex: 1;
   min-width: 0;
-  padding: 8px 9px;
+  padding: 9px 10px;
   background: var(--bg);
   border: 1px solid var(--hair);
-  border-radius: 9px;
+  border-radius: 10px;
   color: var(--text);
   font-family: var(--serif);
   font-variation-settings: 'opsz' 24, 'wght' 450;
-  font-size: 15px;
+  font-size: 16px;
   outline: none;
 }
 .scan-name:focus {
   border-color: rgba(87, 224, 138, 0.5);
+}
+.scan-remove {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  border: none;
+  background: transparent;
+  color: var(--text-3);
+  font-size: 20px;
+  line-height: 1;
+  border-radius: 8px;
+}
+.scan-remove:active {
+  color: var(--expired);
+  background: var(--surface-3);
 }
 .scan-cat {
   flex: none;
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  padding: 7px 9px;
+  padding: 8px 10px;
   background: var(--bg);
   border: 1px solid var(--hair);
   border-radius: var(--r-pill);
@@ -1115,8 +1166,8 @@ select.field__input {
   overflow: hidden;
 }
 .scan-qty button {
-  width: 26px;
-  height: 30px;
+  width: 28px;
+  height: 32px;
   border: none;
   background: transparent;
   color: var(--text);
@@ -1128,6 +1179,25 @@ select.field__input {
   text-align: center;
   font-family: var(--mono);
   font-size: 12px;
+}
+.scan-date {
+  flex: 1;
+  min-width: 0;
+  padding: 8px 10px;
+  background: var(--bg);
+  border: 1px solid var(--hair);
+  border-radius: var(--r-pill);
+  color: var(--text-2);
+  font-family: var(--mono);
+  font-size: 11px;
+  outline: none;
+}
+.scan-date:focus {
+  border-color: rgba(87, 224, 138, 0.5);
+  color: var(--text);
+}
+.scan-date::-webkit-calendar-picker-indicator {
+  filter: invert(0.7);
 }
 
 @keyframes spin {

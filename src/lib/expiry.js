@@ -54,3 +54,11 @@ export function todayISO() {
   const tz = d.getTimezoneOffset() * 60000
   return new Date(d.getTime() - tz).toISOString().slice(0, 10)
 }
+
+// A YYYY-MM-DD date n days from today (local).
+export function isoInDays(n) {
+  const d = atMidnight(new Date())
+  d.setDate(d.getDate() + n)
+  const tz = d.getTimezoneOffset() * 60000
+  return new Date(d.getTime() - tz).toISOString().slice(0, 10)
+}
