@@ -5,6 +5,7 @@ import { needsAttention } from './lib/expiry.js'
 import { FridgeView } from './components/FridgeView.jsx'
 import { RecipesView } from './components/RecipesView.jsx'
 import { AddItemSheet } from './components/AddItemSheet.jsx'
+import { ScanReceiptSheet } from './components/ScanReceiptSheet.jsx'
 import { AlertBanner } from './components/AlertBanner.jsx'
 import { NotifyButton } from './components/NotifyButton.jsx'
 
@@ -20,6 +21,7 @@ export default function App() {
   const notify = useNotifications(fridge.active)
   const [tab, setTab] = useState('fridge')
   const [sheetOpen, setSheetOpen] = useState(false)
+  const [scanOpen, setScanOpen] = useState(false)
   const [expiringFilter, setExpiringFilter] = useState(false)
 
   const attentionCount = useMemo(
@@ -74,12 +76,20 @@ export default function App() {
       </main>
 
       {tab === 'fridge' && (
-        <button className="fab" onClick={() => setSheetOpen(true)}>
-          <span className="fab__plus" aria-hidden="true">
-            +
-          </span>
-          Log item
-        </button>
+        <div className="dock">
+          <button className="scan-fab" onClick={() => setScanOpen(true)} aria-label="Scan a receipt">
+            <span className="scan-fab__icon" aria-hidden="true">
+              ⦿
+            </span>
+            Scan
+          </button>
+          <button className="fab" onClick={() => setSheetOpen(true)}>
+            <span className="fab__plus" aria-hidden="true">
+              +
+            </span>
+            Log item
+          </button>
+        </div>
       )}
 
       <nav className="footer-index" aria-label="Primary">
@@ -104,6 +114,7 @@ export default function App() {
       </nav>
 
       <AddItemSheet open={sheetOpen} onClose={() => setSheetOpen(false)} onAdd={fridge.addItem} />
+      <ScanReceiptSheet open={scanOpen} onClose={() => setScanOpen(false)} onAdd={fridge.addItem} />
     </div>
   )
 }

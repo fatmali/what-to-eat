@@ -11,6 +11,10 @@ always know what to eat — and never let food quietly expire in the back again.
 - **Add & use items** — add items via a bottom-sheet form, adjust quantities with a
   stepper, and mark things as **used** when they're gone (used items are archived,
   not deleted).
+- **Scan a receipt** — snap (or upload) a grocery receipt and it's read **on your
+  device** with Tesseract.js OCR; the detected items become an editable list you
+  review — tick what to keep, fix names, set categories — before filing them into
+  the fridge. The photo never leaves the phone.
 - **Expiration awareness** — color-coded badges (fresh → expiring soon → today →
   expired), a summary alert banner, and an "Expiring" filter, plus a live count
   badge on the Fridge tab.
@@ -27,6 +31,13 @@ always know what to eat — and never let food quietly expire in the back again.
 - **Fridge contents** live in the browser's **localStorage** (key
   `whattoeat.fridge.v1`). No backend, no account — it just works offline. On first
   run the app seeds a sample fridge so nothing is empty.
+- **Receipt OCR** runs fully client-side via [Tesseract.js](https://tesseract.projectnaptha.com/).
+  The engine (worker + WASM core + a compact English model) is self-hosted under
+  `<base>/tesseract/` — no third-party CDN — and cached by the service worker on
+  first use, so scanning works offline afterwards. Those assets are regenerated
+  from `node_modules` by `scripts/setup-tesseract.mjs` (run automatically on
+  `predev`/`prebuild`) and are intentionally **not** tracked as source. Receipt
+  parsing is heuristic (`src/lib/receipt.js`) and always followed by a review step.
 - **Recipes** are read (read-only) from `public/recipes.json`. This is mocked for
   now — the intent is that a separate job/cron regularly regenerates that file with
   suggestions based on the fridge, and the app simply renders whatever it finds.
