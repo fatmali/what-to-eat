@@ -38,10 +38,9 @@ export default function App() {
   return (
     <div className="app">
       <header className="masthead">
-        <div className="masthead__rule masthead__rule--top" />
         <div className="masthead__row">
           <div className="masthead__brand">
-            <p className="masthead__kicker">The daily</p>
+            <p className="masthead__kicker">In the fridge</p>
             <h1 className="masthead__title">
               What&nbsp;to&nbsp;<span className="masthead__eat">Eat</span>
             </h1>
@@ -50,12 +49,11 @@ export default function App() {
         </div>
         <div className="masthead__meta">
           <span>
-            {fridge.active.length} item{fridge.active.length === 1 ? '' : 's'} in store
+            {fridge.active.length} item{fridge.active.length === 1 ? '' : 's'} on hand
           </span>
-          <span className="masthead__dot">✶</span>
+          <span className="masthead__dot" aria-hidden="true" />
           <span>{today}</span>
         </div>
-        <div className="masthead__rule masthead__rule--double" />
       </header>
 
       <main className="main">
@@ -93,7 +91,6 @@ export default function App() {
           }}
           aria-current={tab === 'fridge'}
         >
-          <span className="foot__no">i</span>
           <span className="foot__label">The Ledger</span>
           {attentionCount > 0 && <span className="foot__badge">{attentionCount}</span>}
         </button>
@@ -102,7 +99,6 @@ export default function App() {
           onClick={() => setTab('recipes')}
           aria-current={tab === 'recipes'}
         >
-          <span className="foot__no">ii</span>
           <span className="foot__label">The Specials</span>
         </button>
       </nav>

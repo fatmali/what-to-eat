@@ -54,10 +54,10 @@ export function AddItemSheet({ open, onClose, onAdd }) {
         aria-modal="true"
         aria-label="Add item to the ledger"
       >
-        <div className="ticket__perf" aria-hidden="true" />
+        <div className="ticket__grip" aria-hidden="true" />
         <div className="ticket__head">
           <h2 className="ticket__title">New entry</h2>
-          <span className="ticket__no">№ {todayISO()}</span>
+          <span className="ticket__no">{todayISO()}</span>
         </div>
 
         <label className="field">
@@ -79,10 +79,10 @@ export function AddItemSheet({ open, onClose, onAdd }) {
               <button
                 type="button"
                 key={id}
-                className={`chip ${form.category === id ? 'chip--on' : ''}`}
+                className={`chip chip--${id} ${form.category === id ? 'chip--on' : ''}`}
                 onClick={() => setForm((f) => ({ ...f, category: id }))}
               >
-                <span aria-hidden="true">{CATEGORIES[id].emoji}</span> {CATEGORIES[id].label}
+                <span className="chip__dot" aria-hidden="true" /> {CATEGORIES[id].label}
               </button>
             ))}
           </div>

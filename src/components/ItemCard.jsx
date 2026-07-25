@@ -1,21 +1,16 @@
 import { CATEGORIES } from '../lib/constants.js'
-import { expiryStatus } from '../lib/expiry.js'
 import { ExpiryBadge } from './ExpiryBadge.jsx'
 
-// A single ledger entry: produce-sticker, name, meta line, expiry stamp and
-// the quantity / used controls. Overdue entries get an ink "Overdue" stamp.
+// A single ledger entry: monogram tile, name, meta line, expiry chip and the
+// quantity / used controls.
 export function ItemCard({ item, index = 0, onChangeQty, onMarkUsed }) {
   const cat = CATEGORIES[item.category] ?? CATEGORIES.food
-  const status = expiryStatus(item.expiration)
-  const expired = status === 'expired'
+  const initial = (item.name.trim()[0] ?? '?').toUpperCase()
 
   return (
-    <li
-      className={`entry entry--${item.category} ${expired ? 'entry--struck' : ''}`}
-      style={{ '--i': index }}
-    >
-      <div className="entry__sticker" aria-hidden="true">
-        {cat.emoji}
+    <li className={`entry entry--${item.category}`} style={{ '--i': index }}>
+      <div className="entry__mono" aria-hidden="true">
+        {initial}
       </div>
 
       <div className="entry__col">
@@ -26,7 +21,7 @@ export function ItemCard({ item, index = 0, onChangeQty, onMarkUsed }) {
 
         <p className="entry__meta">
           <span className="entry__cat">{cat.label}</span>
-          <span className="entry__sep">/</span>
+          <span className="entry__sep">·</span>
           <span className="entry__qty">
             {item.quantity}&nbsp;{item.unit}
           </span>
@@ -59,12 +54,6 @@ export function ItemCard({ item, index = 0, onChangeQty, onMarkUsed }) {
           </button>
         </div>
       </div>
-
-      {expired && (
-        <span className="struck-stamp" aria-hidden="true">
-          Overdue
-        </span>
-      )}
     </li>
   )
 }

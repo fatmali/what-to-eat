@@ -27,10 +27,8 @@ export function NotifyButton({ notify }) {
       aria-label={title}
       aria-pressed={on}
     >
-      <span className="bell__icon" aria-hidden="true">
-        {on ? '🔔' : '🔕'}
-      </span>
-      <span className="bell__label">{on ? 'On' : 'Alerts'}</span>
+      <span className="bell__dot" aria-hidden="true" />
+      <span className="bell__label">{on ? 'Alerts on' : 'Alerts'}</span>
     </button>
   )
 }

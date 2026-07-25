@@ -32,21 +32,21 @@ always know what to eat — and never let food quietly expire in the back again.
   suggestions based on the fridge, and the app simply renders whatever it finds.
   **Smart recipe matching is intentionally deferred to a later task.**
 
-## Design — "The Fridge Ledger"
+## Design — dark, OLED-first
 
-The interface is styled as a **vintage grocer's almanac / market ledger** rather
-than a generic app dashboard:
+A refined **true-black** interface built for OLED screens:
 
-- Warm bone-paper background with a real grain texture and cream "slip" cards.
-- **Fraunces** (a wonky old-style display serif) for the masthead and item names,
-  paired with **DM Mono** for quantities, dates, and labels — a printed-receipt
-  feel. Both fonts are self-hosted (via `@fontsource`) so the app stays offline.
-- Ink-brown on cream, with sharp accents of tomato red, olive, and mustard.
-- The signature device: **rubber-stamp expiry marks**, and overdue items get a
-  faded "Overdue" ink stamp struck across the row. The add form is an **order
-  ticket** with a perforated tear edge; the tab bar is a numbered ledger index.
-- Ledger rows reveal in a staggered cascade on load; buttons use a letterpress
-  press-down interaction. All motion respects `prefers-reduced-motion`.
+- Pure `#000` background with near-black surfaces and hairline borders, plus a
+  faint atmospheric glow so black still reads with depth.
+- **Fraunces** (a characterful high-contrast serif) for the masthead and item
+  names, paired with **DM Mono** for quantities, dates, and labels. Both fonts
+  are self-hosted (via `@fontsource`) so the app stays offline.
+- Items are shown with a **monogram tile** (the initial, tinted by category) —
+  no emoji. Expiry is a soft, rounded **status chip** colour-coded green →
+  amber → orange → red.
+- Generously rounded cards, pill controls, and a bottom-sheet add form. Cards
+  reveal in a staggered cascade on load; everything respects
+  `prefers-reduced-motion`.
 
 ## Tech stack
 

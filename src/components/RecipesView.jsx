@@ -51,12 +51,9 @@ export function RecipesView() {
         {state.recipes.map((r, i) => (
           <li key={r.id} className="special" style={{ '--i': i }}>
             <div className="special__head">
-              <span className="special__emoji" aria-hidden="true">
-                {r.emoji ?? '🍲'}
-              </span>
               <h3 className="special__title">{r.title}</h3>
               {r.timeMinutes != null && (
-                <span className="special__time">{r.timeMinutes}′</span>
+                <span className="special__time">{r.timeMinutes} min</span>
               )}
             </div>
             {r.description && <p className="special__desc">{r.description}</p>}

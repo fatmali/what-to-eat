@@ -1,23 +1,23 @@
 import { daysUntil, expiryStatus } from '../lib/expiry.js'
 
-// Compact, stamp-style expiry label for a ledger row.
-function stampLabel(expiration) {
+// Compact, quiet expiry label for a ledger row.
+function shortLabel(expiration) {
   const d = daysUntil(expiration)
-  if (d === Infinity) return 'KEEPS'
-  if (d < -1) return `${Math.abs(d)}d OVERDUE`
-  if (d === -1) return '1d OVERDUE'
-  if (d === 0) return 'EAT TODAY'
-  if (d === 1) return 'EAT BY TMRW'
-  if (d <= 3) return `${d} DAYS LEFT`
-  return `${d} DAYS`
+  if (d === Infinity) return 'Keeps'
+  if (d < -1) return `${Math.abs(d)} days over`
+  if (d === -1) return '1 day over'
+  if (d === 0) return 'Today'
+  if (d === 1) return 'Tomorrow'
+  return `${d} days`
 }
 
-// A small rubber-stamp pill communicating expiry urgency.
+// A soft, rounded chip communicating expiry urgency (no stamp styling).
 export function ExpiryBadge({ expiration }) {
   const status = expiryStatus(expiration)
   return (
-    <span className={`stamp stamp--${status}`}>
-      {stampLabel(expiration)}
+    <span className={`chip-exp chip-exp--${status}`}>
+      <span className="chip-exp__dot" aria-hidden="true" />
+      {shortLabel(expiration)}
     </span>
   )
 }

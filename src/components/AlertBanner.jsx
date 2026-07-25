@@ -20,9 +20,8 @@ export function AlertBanner({ items, onReview }) {
       className={`notice ${expired.length ? 'notice--danger' : 'notice--warn'}`}
       onClick={onReview}
     >
-      <span className="notice__mark" aria-hidden="true">
-        {expired.length ? '!' : '⏳'}
-      </span>
+      <span className="notice__mark" aria-hidden="true" />
+
       <span className="notice__body">
         <span className="notice__kicker">Kitchen bulletin</span>
         <span className="notice__text">{parts.join(' · ')} — review the ledger</span>
