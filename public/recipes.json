@@ -1,0 +1,22 @@
+{
+  "generatedAt": null,
+  "note": "Mock recipe feed. A future job will overwrite this file with suggestions based on the fridge contents. The app reads it read-only.",
+  "recipes": [
+    {
+      "id": "sample-1",
+      "title": "Spinach & Feta Omelette",
+      "description": "A quick high-protein breakfast that uses up leafy greens and eggs.",
+      "usesFridgeItems": ["Spinach", "Eggs"],
+      "timeMinutes": 12,
+      "emoji": "🍳"
+    },
+    {
+      "id": "sample-2",
+      "title": "Chicken & Veg Traybake",
+      "description": "Roast the chicken with whatever veg is near its date.",
+      "usesFridgeItems": ["Chicken breast", "Roast veggies"],
+      "timeMinutes": 35,
+      "emoji": "🍗"
+    }
+  ]
+}

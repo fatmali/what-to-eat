@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#22c55e"/>
+      <stop offset="1" stop-color="#16a34a"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#g)"/>
+  <g fill="#052e14">
+    <!-- Fork -->
+    <rect x="150" y="120" width="20" height="90" rx="10"/>
+    <rect x="188" y="120" width="20" height="90" rx="10"/>
+    <rect x="226" y="120" width="20" height="90" rx="10"/>
+    <path d="M150 205 h96 a10 10 0 0 1 10 10 v20 a48 48 0 0 1 -38 47 v98 a20 20 0 0 1 -40 0 v-98 a48 48 0 0 1 -38 -47 v-20 a10 10 0 0 1 10 -10 z"/>
+    <!-- Spoon -->
+    <path d="M340 118 c40 0 62 44 50 92 c-7 28 -28 46 -50 50 v110 a20 20 0 0 1 -40 0 v-110 c-22 -4 -43 -22 -50 -50 c-12 -48 10 -92 50 -92 z" opacity="0"/>
+    <path d="M356 116 c34 0 54 40 44 84 c-6 26 -24 44 -44 49 v113 a18 18 0 0 1 -36 0 v-113 c-20 -5 -38 -23 -44 -49 c-10 -44 10 -84 44 -84 z"/>
+  </g>
+</svg>
