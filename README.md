@@ -11,10 +11,11 @@ always know what to eat — and never let food quietly expire in the back again.
 - **Add, edit & use items** — add items via a bottom-sheet form, **tap an item's
   name to edit** everything (name, category, quantity, unit, expiry) or delete it,
   and adjust quantities with a stepper.
-- **Shopping list** — crossing an item off doesn't discard it: it moves to **The
-  List** tab as something *to buy*. Tap **Got it** to put it back in the fridge, or
-  remove it. The list also has a **Running low** section for items at/under a
-  low-stock threshold, so you can add them before they run out.
+- **Shopping list** — crossing a **grocery** off doesn't discard it: it moves to
+  **The List** tab as something *to buy*. Tap **Got it** to put it back in the
+  fridge, or remove it. The list also has a **Running low** section for groceries
+  at/under a low-stock threshold. (Leftovers and meal prep are consumed, not
+  restocked, so they never show on the list.)
 - **Fast onboarding** — first-run users start empty and are greeted with three
   low-friction ways to stock the fridge: **scan a receipt**, **tap common
   staples**, or **paste a list** — with expiry dates auto-estimated from a

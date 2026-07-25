@@ -1,15 +1,22 @@
 import { useMemo } from 'react'
 import { CATEGORIES, LOW_STOCK_THRESHOLD } from '../lib/constants.js'
 
-// The shopping list: things you've crossed off (to buy) plus a heads-up on
-// items running low in the fridge.
+// The shopping list is about groceries you rebuy — food only. Leftovers and
+// meal prep are consumed, not restocked, so they never appear here.
+const isGrocery = (it) => it.category === 'food'
+
+// The shopping list: groceries you've crossed off (to buy) plus a heads-up on
+// groceries running low in the fridge.
 export function ShoppingView({ used, active, onRestock, onRemove, onCrossOff, onGoFridge }) {
   const toBuy = useMemo(
-    () => [...used].sort((a, b) => (b.usedAt || '').localeCompare(a.usedAt || '')),
+    () =>
+      used
+        .filter(isGrocery)
+        .sort((a, b) => (b.usedAt || '').localeCompare(a.usedAt || '')),
     [used],
   )
   const low = useMemo(
-    () => active.filter((it) => (Number(it.quantity) || 0) <= LOW_STOCK_THRESHOLD),
+    () => active.filter((it) => isGrocery(it) && (Number(it.quantity) || 0) <= LOW_STOCK_THRESHOLD),
     [active],
   )
 

@@ -62,7 +62,10 @@ export default function App() {
     () => fridge.active.filter(needsAttention).length,
     [fridge.active],
   )
-  const toBuyCount = fridge.used.length
+  const toBuyCount = useMemo(
+    () => fridge.used.filter((it) => it.category === 'food').length,
+    [fridge.used],
+  )
 
   const today = DATE_FMT.format(new Date()).toUpperCase()
 
