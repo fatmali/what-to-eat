@@ -8,6 +8,13 @@ import { AddItemSheet } from './components/AddItemSheet.jsx'
 import { AlertBanner } from './components/AlertBanner.jsx'
 import { NotifyButton } from './components/NotifyButton.jsx'
 
+const DATE_FMT = new Intl.DateTimeFormat('en-GB', {
+  weekday: 'short',
+  day: '2-digit',
+  month: 'short',
+  year: 'numeric',
+})
+
 export default function App() {
   const fridge = useFridge()
   const notify = useNotifications(fridge.active)
@@ -20,7 +27,9 @@ export default function App() {
     [fridge.active],
   )
 
-  // Jump to the fridge tab with the "Expiring" filter selected.
+  const today = DATE_FMT.format(new Date()).toUpperCase()
+
+  // Jump to the ledger with the "Going off" filter selected.
   const reviewExpiring = () => {
     setTab('fridge')
     setExpiringFilter(true)
@@ -28,17 +37,25 @@ export default function App() {
 
   return (
     <div className="app">
-      <header className="topbar">
-        <div className="topbar__brand">
-          <span className="topbar__logo" aria-hidden="true">🍴</span>
-          <div>
-            <h1 className="topbar__title">What To Eat</h1>
-            <p className="topbar__sub">
-              {fridge.active.length} item{fridge.active.length === 1 ? '' : 's'} in your fridge
-            </p>
+      <header className="masthead">
+        <div className="masthead__rule masthead__rule--top" />
+        <div className="masthead__row">
+          <div className="masthead__brand">
+            <p className="masthead__kicker">The daily</p>
+            <h1 className="masthead__title">
+              What&nbsp;to&nbsp;<span className="masthead__eat">Eat</span>
+            </h1>
           </div>
+          <NotifyButton notify={notify} />
         </div>
-        <NotifyButton notify={notify} />
+        <div className="masthead__meta">
+          <span>
+            {fridge.active.length} item{fridge.active.length === 1 ? '' : 's'} in store
+          </span>
+          <span className="masthead__dot">✶</span>
+          <span>{today}</span>
+        </div>
+        <div className="masthead__rule masthead__rule--double" />
       </header>
 
       <main className="main">
@@ -59,31 +76,34 @@ export default function App() {
       </main>
 
       {tab === 'fridge' && (
-        <button className="fab" onClick={() => setSheetOpen(true)} aria-label="Add item">
-          +
+        <button className="fab" onClick={() => setSheetOpen(true)}>
+          <span className="fab__plus" aria-hidden="true">
+            +
+          </span>
+          Log item
         </button>
       )}
 
-      <nav className="tabbar" aria-label="Primary">
+      <nav className="footer-index" aria-label="Primary">
         <button
-          className={`tab ${tab === 'fridge' ? 'tab--on' : ''}`}
+          className={`foot ${tab === 'fridge' ? 'foot--on' : ''}`}
           onClick={() => {
             setTab('fridge')
             setExpiringFilter(false)
           }}
           aria-current={tab === 'fridge'}
         >
-          <span className="tab__icon" aria-hidden="true">🧊</span>
-          <span className="tab__label">Fridge</span>
-          {attentionCount > 0 && <span className="tab__badge">{attentionCount}</span>}
+          <span className="foot__no">i</span>
+          <span className="foot__label">The Ledger</span>
+          {attentionCount > 0 && <span className="foot__badge">{attentionCount}</span>}
         </button>
         <button
-          className={`tab ${tab === 'recipes' ? 'tab--on' : ''}`}
+          className={`foot ${tab === 'recipes' ? 'foot--on' : ''}`}
           onClick={() => setTab('recipes')}
           aria-current={tab === 'recipes'}
         >
-          <span className="tab__icon" aria-hidden="true">📖</span>
-          <span className="tab__label">Recipes</span>
+          <span className="foot__no">ii</span>
+          <span className="foot__label">The Specials</span>
         </button>
       </nav>
 

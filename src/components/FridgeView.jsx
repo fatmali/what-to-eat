@@ -4,12 +4,12 @@ import { byExpiry, needsAttention } from '../lib/expiry.js'
 import { ItemCard } from './ItemCard.jsx'
 
 const FILTERS = [
-  { id: 'all', label: 'All' },
-  { id: 'expiring', label: 'Expiring' },
+  { id: 'all', label: 'Everything' },
+  { id: 'expiring', label: 'Going off' },
   ...CATEGORY_ORDER.map((id) => ({ id, label: CATEGORIES[id].label })),
 ]
 
-// The main fridge screen: filter chips + the sorted list of active items.
+// The main ledger screen: an index of filters + the sorted list of entries.
 export function FridgeView({ items, onChangeQty, onMarkUsed, onAdd, initialFilter = 'all' }) {
   const [filter, setFilter] = useState(initialFilter)
 
@@ -32,19 +32,19 @@ export function FridgeView({ items, onChangeQty, onMarkUsed, onAdd, initialFilte
 
   return (
     <section className="view">
-      <div className="filters" role="tablist" aria-label="Filter fridge">
+      <div className="index" role="tablist" aria-label="Filter the ledger">
         {FILTERS.map((f) => (
           <button
             key={f.id}
             role="tab"
             aria-selected={filter === f.id}
-            className={`filter ${filter === f.id ? 'filter--on' : ''} ${
-              f.id === 'expiring' && counts.expiring > 0 ? 'filter--alert' : ''
+            className={`index__tab ${filter === f.id ? 'index__tab--on' : ''} ${
+              f.id === 'expiring' && counts.expiring > 0 ? 'index__tab--alert' : ''
             }`}
             onClick={() => setFilter(f.id)}
           >
             {f.label}
-            {counts[f.id] > 0 && <span className="filter__count">{counts[f.id]}</span>}
+            {counts[f.id] > 0 && <sup className="index__count">{counts[f.id]}</sup>}
           </button>
         ))}
       </div>
@@ -52,11 +52,12 @@ export function FridgeView({ items, onChangeQty, onMarkUsed, onAdd, initialFilte
       {visible.length === 0 ? (
         <EmptyState filter={filter} onAdd={onAdd} hasAny={items.length > 0} />
       ) : (
-        <ul className="items">
-          {visible.map((item) => (
+        <ul className="entries">
+          {visible.map((item, i) => (
             <ItemCard
               key={item.id}
               item={item}
+              index={i}
               onChangeQty={onChangeQty}
               onMarkUsed={onMarkUsed}
             />
@@ -71,29 +72,29 @@ function EmptyState({ filter, onAdd, hasAny }) {
   if (filter === 'expiring') {
     return (
       <div className="empty">
-        <div className="empty__emoji">🌱</div>
-        <p className="empty__title">Nothing about to expire</p>
-        <p className="empty__text">Everything in your fridge is still fresh. Nice.</p>
+        <div className="empty__mark">✽</div>
+        <p className="empty__title">Nothing going off</p>
+        <p className="empty__text">The whole ledger is fresh. A rare and beautiful thing.</p>
       </div>
     )
   }
   if (!hasAny) {
     return (
       <div className="empty">
-        <div className="empty__emoji">🧊</div>
-        <p className="empty__title">Your fridge is empty</p>
-        <p className="empty__text">Add what you have so you always know what to eat.</p>
+        <div className="empty__mark">✵</div>
+        <p className="empty__title">The ledger is bare</p>
+        <p className="empty__text">Write in what you have, so you always know what to eat.</p>
         <button className="btn btn--primary" onClick={onAdd}>
-          + Add your first item
+          Log the first item
         </button>
       </div>
     )
   }
   return (
     <div className="empty">
-      <div className="empty__emoji">🔍</div>
-      <p className="empty__title">Nothing here</p>
-      <p className="empty__text">No items in this category yet.</p>
+      <div className="empty__mark">◦</div>
+      <p className="empty__title">No entries here</p>
+      <p className="empty__text">Nothing filed under this heading yet.</p>
     </div>
   )
 }

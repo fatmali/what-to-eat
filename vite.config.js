@@ -13,8 +13,8 @@ export default defineConfig({
         name: 'What To Eat',
         short_name: 'WhatToEat',
         description: "Track what's in your fridge and decide what to eat.",
-        theme_color: '#16a34a',
-        background_color: '#0b1220',
+        theme_color: '#c0392b',
+        background_color: '#f2e8d2',
         display: 'standalone',
         orientation: 'portrait',
         start_url: '/',
@@ -38,7 +38,7 @@ export default defineConfig({
         ],
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,svg,png,json}'],
+        globPatterns: ['**/*.{js,css,html,svg,png,json,woff2}'],
       },
       devOptions: {
         enabled: true,

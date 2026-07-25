@@ -1,7 +1,7 @@
 import { expiryStatus } from '../lib/expiry.js'
 
-// Sticky banner summarizing what needs eating. Tapping it jumps to the
-// "Expiring" filter on the fridge screen.
+// A stamped notice slip summarizing what needs eating. Tapping it jumps to the
+// "Going off" filter.
 export function AlertBanner({ items, onReview }) {
   const expired = items.filter((it) => expiryStatus(it.expiration) === 'expired')
   const soon = items.filter((it) => {
@@ -12,22 +12,23 @@ export function AlertBanner({ items, onReview }) {
   if (expired.length === 0 && soon.length === 0) return null
 
   const parts = []
-  if (expired.length) parts.push(`${expired.length} expired`)
-  if (soon.length) parts.push(`${soon.length} expiring soon`)
+  if (expired.length) parts.push(`${expired.length} overdue`)
+  if (soon.length) parts.push(`${soon.length} on the clock`)
 
   return (
     <button
-      className={`alert ${expired.length ? 'alert--danger' : 'alert--warn'}`}
+      className={`notice ${expired.length ? 'notice--danger' : 'notice--warn'}`}
       onClick={onReview}
     >
-      <span className="alert__icon" aria-hidden="true">
-        {expired.length ? '⚠️' : '⏰'}
+      <span className="notice__mark" aria-hidden="true">
+        {expired.length ? '!' : '⏳'}
       </span>
-      <span className="alert__text">
-        {parts.join(' · ')} — tap to review
+      <span className="notice__body">
+        <span className="notice__kicker">Kitchen bulletin</span>
+        <span className="notice__text">{parts.join(' · ')} — review the ledger</span>
       </span>
-      <span className="alert__chevron" aria-hidden="true">
-        ›
+      <span className="notice__arrow" aria-hidden="true">
+        →
       </span>
     </button>
   )

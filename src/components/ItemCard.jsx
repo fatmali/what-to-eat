@@ -2,52 +2,69 @@ import { CATEGORIES } from '../lib/constants.js'
 import { expiryStatus } from '../lib/expiry.js'
 import { ExpiryBadge } from './ExpiryBadge.jsx'
 
-// A single fridge item: name, quantity stepper, expiry badge, and actions.
-export function ItemCard({ item, onChangeQty, onMarkUsed }) {
+// A single ledger entry: produce-sticker, name, meta line, expiry stamp and
+// the quantity / used controls. Overdue entries get an ink "Overdue" stamp.
+export function ItemCard({ item, index = 0, onChangeQty, onMarkUsed }) {
   const cat = CATEGORIES[item.category] ?? CATEGORIES.food
   const status = expiryStatus(item.expiration)
-  const attention = status === 'expired' || status === 'today' || status === 'soon'
+  const expired = status === 'expired'
 
   return (
-    <li className={`item ${attention ? 'item--attention' : ''}`}>
-      <div className="item__emoji" aria-hidden="true">
+    <li
+      className={`entry entry--${item.category} ${expired ? 'entry--struck' : ''}`}
+      style={{ '--i': index }}
+    >
+      <div className="entry__sticker" aria-hidden="true">
         {cat.emoji}
       </div>
 
-      <div className="item__body">
-        <h3 className="item__name">{item.name}</h3>
-        <div className="item__meta">
+      <div className="entry__col">
+        <div className="entry__top">
+          <h3 className="entry__name">{item.name}</h3>
           <ExpiryBadge expiration={item.expiration} />
-          <span className="item__cat">{cat.label}</span>
+        </div>
+
+        <p className="entry__meta">
+          <span className="entry__cat">{cat.label}</span>
+          <span className="entry__sep">/</span>
+          <span className="entry__qty">
+            {item.quantity}&nbsp;{item.unit}
+          </span>
+        </p>
+
+        <div className="entry__tools">
+          <div className="stepper" role="group" aria-label={`Quantity of ${item.name}`}>
+            <button
+              className="stepper__btn"
+              onClick={() => onChangeQty(item.id, -1)}
+              aria-label={`Decrease ${item.name}`}
+              disabled={item.quantity <= 0}
+            >
+              –
+            </button>
+            <span className="stepper__val">
+              {item.quantity}
+              <i>{item.unit}</i>
+            </span>
+            <button
+              className="stepper__btn"
+              onClick={() => onChangeQty(item.id, 1)}
+              aria-label={`Increase ${item.name}`}
+            >
+              +
+            </button>
+          </div>
+          <button className="entry__used" onClick={() => onMarkUsed(item.id)}>
+            Cross&nbsp;off
+          </button>
         </div>
       </div>
 
-      <div className="item__actions">
-        <div className="stepper" role="group" aria-label={`Quantity of ${item.name}`}>
-          <button
-            className="stepper__btn"
-            onClick={() => onChangeQty(item.id, -1)}
-            aria-label={`Decrease ${item.name}`}
-            disabled={item.quantity <= 0}
-          >
-            −
-          </button>
-          <span className="stepper__value">
-            {item.quantity}
-            <small>{item.unit}</small>
-          </span>
-          <button
-            className="stepper__btn"
-            onClick={() => onChangeQty(item.id, 1)}
-            aria-label={`Increase ${item.name}`}
-          >
-            +
-          </button>
-        </div>
-        <button className="item__used" onClick={() => onMarkUsed(item.id)}>
-          ✓ Used
-        </button>
-      </div>
+      {expired && (
+        <span className="struck-stamp" aria-hidden="true">
+          Overdue
+        </span>
+      )}
     </li>
   )
 }

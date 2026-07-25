@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 
 // Deferred feature. Reads the mock recipes.json (which a future job will
-// populate based on the fridge) and renders whatever is there. Kept intentionally
-// simple — matching / ranking logic is a later task.
+// populate based on the fridge) and renders whatever is there. Matching /
+// ranking logic is a later task.
 export function RecipesView() {
   const [state, setState] = useState({ status: 'loading', recipes: [], generatedAt: null })
 
@@ -26,50 +26,50 @@ export function RecipesView() {
 
   return (
     <section className="view">
-      <div className="recipes__banner">
-        <span aria-hidden="true">🧪</span>
-        <div>
-          <strong>Suggestions preview</strong>
-          <p>
-            These are placeholder recipes from <code>recipes.json</code>. Smart matching to your
-            fridge comes in a later update.
-          </p>
-        </div>
+      <div className="preview-slip">
+        <span className="preview-slip__stamp" aria-hidden="true">
+          Preview
+        </span>
+        <p>
+          Placeholder dishes from <code>recipes.json</code>. Suggestions matched to your ledger
+          arrive in a later edition.
+        </p>
       </div>
 
-      {state.status === 'loading' && <p className="muted">Loading suggestions…</p>}
-      {state.status === 'error' && <p className="muted">Couldn't load recipes right now.</p>}
+      {state.status === 'loading' && <p className="muted">Setting the table…</p>}
+      {state.status === 'error' && <p className="muted">Couldn't fetch today's specials.</p>}
 
       {state.status === 'ready' && state.recipes.length === 0 && (
         <div className="empty">
-          <div className="empty__emoji">🍽️</div>
-          <p className="empty__title">No suggestions yet</p>
-          <p className="empty__text">They'll show up here once the feed is populated.</p>
+          <div className="empty__mark">✽</div>
+          <p className="empty__title">No specials yet</p>
+          <p className="empty__text">They'll be posted here once the kitchen writes them up.</p>
         </div>
       )}
 
-      <ul className="recipes">
-        {state.recipes.map((r) => (
-          <li key={r.id} className="recipe">
-            <div className="recipe__emoji" aria-hidden="true">
-              {r.emoji ?? '🍲'}
-            </div>
-            <div className="recipe__body">
-              <div className="recipe__top">
-                <h3 className="recipe__title">{r.title}</h3>
-                {r.timeMinutes != null && <span className="recipe__time">{r.timeMinutes} min</span>}
-              </div>
-              {r.description && <p className="recipe__desc">{r.description}</p>}
-              {Array.isArray(r.usesFridgeItems) && r.usesFridgeItems.length > 0 && (
-                <div className="recipe__uses">
-                  {r.usesFridgeItems.map((name) => (
-                    <span key={name} className="recipe__tag">
-                      {name}
-                    </span>
-                  ))}
-                </div>
+      <ul className="specials">
+        {state.recipes.map((r, i) => (
+          <li key={r.id} className="special" style={{ '--i': i }}>
+            <div className="special__head">
+              <span className="special__emoji" aria-hidden="true">
+                {r.emoji ?? '🍲'}
+              </span>
+              <h3 className="special__title">{r.title}</h3>
+              {r.timeMinutes != null && (
+                <span className="special__time">{r.timeMinutes}′</span>
               )}
             </div>
+            {r.description && <p className="special__desc">{r.description}</p>}
+            {Array.isArray(r.usesFridgeItems) && r.usesFridgeItems.length > 0 && (
+              <div className="special__uses">
+                <span className="special__uses-label">uses</span>
+                {r.usesFridgeItems.map((name) => (
+                  <span key={name} className="special__tag">
+                    {name}
+                  </span>
+                ))}
+              </div>
+            )}
           </li>
         ))}
       </ul>

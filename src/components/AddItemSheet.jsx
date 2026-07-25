@@ -10,7 +10,7 @@ const empty = {
   expiration: '',
 }
 
-// Bottom-sheet modal for adding a new fridge item.
+// A bottom-sheet "order ticket" for writing a new item into the ledger.
 export function AddItemSheet({ open, onClose, onAdd }) {
   const [form, setForm] = useState(empty)
   const nameRef = useRef(null)
@@ -18,7 +18,6 @@ export function AddItemSheet({ open, onClose, onAdd }) {
   useEffect(() => {
     if (open) {
       setForm(empty)
-      // Focus the name field once the sheet has animated in.
       const t = setTimeout(() => nameRef.current?.focus(), 120)
       return () => clearTimeout(t)
     }
@@ -46,32 +45,35 @@ export function AddItemSheet({ open, onClose, onAdd }) {
   }
 
   return (
-    <div className="sheet__scrim" onClick={onClose}>
+    <div className="scrim" onClick={onClose}>
       <form
-        className="sheet"
+        className="ticket"
         onClick={(e) => e.stopPropagation()}
         onSubmit={submit}
         role="dialog"
         aria-modal="true"
-        aria-label="Add item to fridge"
+        aria-label="Add item to the ledger"
       >
-        <div className="sheet__grip" aria-hidden="true" />
-        <h2 className="sheet__title">Add to fridge</h2>
+        <div className="ticket__perf" aria-hidden="true" />
+        <div className="ticket__head">
+          <h2 className="ticket__title">New entry</h2>
+          <span className="ticket__no">№ {todayISO()}</span>
+        </div>
 
         <label className="field">
-          <span className="field__label">Name</span>
+          <span className="field__label">Item</span>
           <input
             ref={nameRef}
-            className="field__input"
+            className="field__input field__input--display"
             value={form.name}
             onChange={set('name')}
-            placeholder="e.g. Carrots, Lasagna, Curry"
+            placeholder="Carrots, lasagne, that curry…"
             autoComplete="off"
           />
         </label>
 
         <div className="field">
-          <span className="field__label">Category</span>
+          <span className="field__label">Filed under</span>
           <div className="chips">
             {CATEGORY_ORDER.map((id) => (
               <button
@@ -88,7 +90,7 @@ export function AddItemSheet({ open, onClose, onAdd }) {
 
         <div className="field-row">
           <label className="field field--qty">
-            <span className="field__label">Quantity</span>
+            <span className="field__label">Qty</span>
             <input
               className="field__input"
               type="number"
@@ -112,7 +114,7 @@ export function AddItemSheet({ open, onClose, onAdd }) {
         </div>
 
         <label className="field">
-          <span className="field__label">Expiration date</span>
+          <span className="field__label">Best before</span>
           <input
             className="field__input"
             type="date"
@@ -120,15 +122,15 @@ export function AddItemSheet({ open, onClose, onAdd }) {
             value={form.expiration}
             onChange={set('expiration')}
           />
-          <span className="field__hint">Leave empty if it doesn't really expire.</span>
+          <span className="field__hint">Leave blank for things that keep.</span>
         </label>
 
-        <div className="sheet__actions">
+        <div className="ticket__actions">
           <button type="button" className="btn btn--ghost" onClick={onClose}>
-            Cancel
+            Discard
           </button>
           <button type="submit" className="btn btn--primary">
-            Add item
+            File it
           </button>
         </div>
       </form>

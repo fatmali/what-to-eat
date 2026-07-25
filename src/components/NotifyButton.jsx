@@ -1,5 +1,4 @@
-// Header control for OS notifications. Shows the current state and lets the
-// user turn expiry reminders on or off.
+// Masthead control for OS reminders, styled as a letterpress toggle.
 export function NotifyButton({ notify }) {
   const { supported, permission, enabled, requestPermission, disable } = notify
 
@@ -16,19 +15,22 @@ export function NotifyButton({ notify }) {
     permission === 'denied'
       ? 'Notifications are blocked in your browser settings'
       : on
-        ? 'Expiry reminders on — tap to turn off'
-        : 'Turn on expiry reminders'
+        ? 'Reminders on — tap to silence'
+        : 'Get reminded before food turns'
 
   return (
     <button
-      className={`notify ${on ? 'notify--on' : ''}`}
+      className={`bell ${on ? 'bell--on' : ''}`}
       onClick={onClick}
       disabled={permission === 'denied'}
       title={title}
       aria-label={title}
       aria-pressed={on}
     >
-      <span aria-hidden="true">{on ? '🔔' : '🔕'}</span>
+      <span className="bell__icon" aria-hidden="true">
+        {on ? '🔔' : '🔕'}
+      </span>
+      <span className="bell__label">{on ? 'On' : 'Alerts'}</span>
     </button>
   )
 }
