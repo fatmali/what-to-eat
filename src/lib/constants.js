@@ -3,6 +3,8 @@
 export const STORAGE_KEY = 'whattoeat.fridge.v1'
 export const NOTIFIED_KEY = 'whattoeat.notified.v1'
 export const NOTIFY_PREF_KEY = 'whattoeat.notifyEnabled.v1'
+export const ONBOARDED_KEY = 'whattoeat.onboarded.v1'
+export const MEALS_KEY = 'whattoeat.meals.v1'
 
 // Items expiring within this many days count as "expiring soon".
 export const SOON_THRESHOLD_DAYS = 3

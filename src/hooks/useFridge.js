@@ -27,6 +27,26 @@ export function useFridge() {
     return item
   }, [])
 
+  // Add several items at once (onboarding: staples grid, pasted list).
+  const addMany = useCallback((list) => {
+    const now = new Date().toISOString()
+    const built = list
+      .filter((d) => d.name && d.name.trim())
+      .map((d) => ({
+        id: crypto.randomUUID(),
+        name: d.name.trim(),
+        category: d.category || 'food',
+        quantity: Number(d.quantity) || 1,
+        unit: d.unit || 'pcs',
+        expiration: d.expiration || '',
+        image: d.image || '',
+        addedAt: now,
+        status: 'active',
+      }))
+    if (built.length) setItems((prev) => [...built, ...prev])
+    return built.length
+  }, [])
+
   const updateItem = useCallback((id, patch) => {
     setItems((prev) => prev.map((it) => (it.id === id ? { ...it, ...patch } : it)))
   }, [])
@@ -86,6 +106,7 @@ export function useFridge() {
     active,
     used,
     addItem,
+    addMany,
     updateItem,
     changeQuantity,
     markUsed,

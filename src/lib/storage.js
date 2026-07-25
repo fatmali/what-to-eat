@@ -1,16 +1,11 @@
 import { STORAGE_KEY } from './constants.js'
-import { seedItems } from './seed.js'
 
-// Load the fridge from localStorage, seeding on first run. Returns an array of
-// items. Any parse/quirk falls back to a fresh seed so the app always renders.
+// Load the fridge from localStorage. Returns an array of items; first-run users
+// start empty and are greeted by onboarding (they can load sample data there).
 export function loadItems() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
-    if (raw === null) {
-      const seeded = seedItems()
-      saveItems(seeded)
-      return seeded
-    }
+    if (raw === null) return []
     const parsed = JSON.parse(raw)
     if (!Array.isArray(parsed)) return []
     return parsed

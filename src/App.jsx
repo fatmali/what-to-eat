@@ -1,12 +1,15 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useFridge } from './hooks/useFridge.js'
 import { useNotifications } from './hooks/useNotifications.js'
 import { needsAttention } from './lib/expiry.js'
+import { ONBOARDED_KEY } from './lib/constants.js'
+import { seedItems } from './lib/seed.js'
 import { FridgeView } from './components/FridgeView.jsx'
 import { RecipesView } from './components/RecipesView.jsx'
 import { ShoppingView } from './components/ShoppingView.jsx'
 import { AddItemSheet } from './components/AddItemSheet.jsx'
 import { ScanReceiptSheet } from './components/ScanReceiptSheet.jsx'
+import { Onboarding } from './components/Onboarding.jsx'
 import { AlertBanner } from './components/AlertBanner.jsx'
 import { NotifyButton } from './components/NotifyButton.jsx'
 
@@ -25,6 +28,30 @@ export default function App() {
   const [editItem, setEditItem] = useState(null)
   const [scanOpen, setScanOpen] = useState(false)
   const [expiringFilter, setExpiringFilter] = useState(false)
+  const [onboarded, setOnboarded] = useState(() => {
+    try {
+      return localStorage.getItem(ONBOARDED_KEY) === 'true'
+    } catch {
+      return false
+    }
+  })
+
+  // Once the fridge has anything in it, onboarding is done for good.
+  useEffect(() => {
+    if (onboarded) return
+    if (fridge.items.length > 0) finishOnboarding()
+  }, [fridge.items.length, onboarded])
+
+  const finishOnboarding = () => {
+    setOnboarded(true)
+    try {
+      localStorage.setItem(ONBOARDED_KEY, 'true')
+    } catch {
+      /* ignore */
+    }
+  }
+
+  const showOnboarding = !onboarded && fridge.items.length === 0
 
   const attentionCount = useMemo(
     () => fridge.active.filter(needsAttention).length,
@@ -148,6 +175,18 @@ export default function App() {
         onDelete={fridge.removeItem}
       />
       <ScanReceiptSheet open={scanOpen} onClose={() => setScanOpen(false)} onAdd={fridge.addItem} />
+
+      {showOnboarding && (
+        <Onboarding
+          onScan={() => setScanOpen(true)}
+          onAddMany={fridge.addMany}
+          onSeed={() => {
+            fridge.addMany(seedItems())
+            finishOnboarding()
+          }}
+          onDismiss={finishOnboarding}
+        />
+      )}
     </div>
   )
 }

@@ -2,15 +2,12 @@ import { useEffect, useRef, useState } from 'react'
 import { CATEGORY_ORDER, CATEGORIES } from '../lib/constants.js'
 import { recognizeText } from '../lib/ocr.js'
 import { parseReceipt } from '../lib/receipt.js'
-import { isoInDays, todayISO } from '../lib/expiry.js'
+import { todayISO } from '../lib/expiry.js'
+import { defaultExpiration } from '../lib/shelfLife.js'
 import { fileToThumbnail } from '../lib/image.js'
 import { CameraIcon } from './CameraIcon.jsx'
 
 let uid = 0
-
-// Default shelf life (days from today) used to pre-fill each scanned item's
-// expiry so it still triggers reminders — the user can adjust or clear it.
-const DEFAULT_SHELF_DAYS = 7
 
 // Bottom-sheet flow: photograph a receipt → OCR on-device → review/edit the
 // detected items (name, category, quantity, expiry) → file the chosen ones.
@@ -72,7 +69,7 @@ export function ScanReceiptSheet({ open, onClose, onAdd }) {
             name: it.name,
             category: 'food',
             quantity: it.quantity,
-            expiration: isoInDays(DEFAULT_SHELF_DAYS),
+            expiration: defaultExpiration(it.name, 'food'),
             image: '',
           }))
         return [...prev, ...fresh]
