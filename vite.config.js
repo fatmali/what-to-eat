@@ -4,6 +4,9 @@ import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vite.dev/config/
 export default defineConfig({
+  // Served from a GitHub Pages project site: https://fatmali.github.io/what-to-eat/
+  // Override with `VITE_BASE=/` (e.g. for a custom domain or user/org page).
+  base: process.env.VITE_BASE ?? '/what-to-eat/',
   plugins: [
     react(),
     VitePWA({
@@ -17,7 +20,8 @@ export default defineConfig({
         background_color: '#000000',
         display: 'standalone',
         orientation: 'portrait',
-        start_url: '/',
+        scope: process.env.VITE_BASE ?? '/what-to-eat/',
+        start_url: process.env.VITE_BASE ?? '/what-to-eat/',
         icons: [
           {
             src: 'pwa-192x192.png',

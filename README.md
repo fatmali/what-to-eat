@@ -64,8 +64,31 @@ npm run build      # production build into dist/
 npm run preview    # preview the production build
 ```
 
+Because `base` is set to `/what-to-eat/` (see below), the dev server runs at
+`http://localhost:5173/what-to-eat/`.
+
 Then open the app on your phone (or a mobile viewport) and use **Add to Home
 Screen** to install it.
+
+## Deploying to GitHub Pages
+
+The app is a fully static site (no backend), so it serves directly from GitHub
+Pages. Deployment is automated:
+
+1. In the repo, go to **Settings → Pages** and set **Source: GitHub Actions**.
+2. Push to the default branch — the [`Deploy to GitHub Pages`](.github/workflows/deploy.yml)
+   workflow builds the site and publishes it. You can also run it manually from
+   the **Actions** tab (**Run workflow**).
+3. The site goes live at **https://fatmali.github.io/what-to-eat/**.
+
+Notes:
+
+- `vite.config.js` sets `base: '/what-to-eat/'` so assets resolve under the
+  project-site subpath. For a **custom domain** or a **user/org page** (served at
+  the domain root), build with `VITE_BASE=/ npm run build` instead.
+- A `.nojekyll` file is included so GitHub Pages serves all files as-is.
+- The service worker is scoped to `/what-to-eat/`, so the PWA installs and works
+  offline from the Pages URL.
 
 ## Project structure
 
