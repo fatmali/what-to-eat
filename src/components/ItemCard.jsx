@@ -1,5 +1,6 @@
 import { CATEGORIES } from '../lib/constants.js'
 import { ExpiryBadge } from './ExpiryBadge.jsx'
+import { CameraIcon } from './CameraIcon.jsx'
 
 // A single ledger entry: monogram tile, name, meta line, expiry chip and the
 // quantity / used controls.
@@ -17,7 +18,12 @@ export function ItemCard({ item, index = 0, onChangeQty, onMarkUsed, onEdit }) {
         {item.image ? (
           <img className="entry__photo" src={item.image} alt="" loading="lazy" />
         ) : (
-          initial
+          <>
+            {initial}
+            <span className="entry__cam">
+              <CameraIcon className="entry__cam-svg" />
+            </span>
+          </>
         )}
       </button>
 

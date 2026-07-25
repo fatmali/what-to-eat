@@ -10,12 +10,16 @@ always know what to eat — and never let food quietly expire in the back again.
   to the top.
 - **Add, edit & use items** — add items via a bottom-sheet form, **tap an item's
   name to edit** everything (name, category, quantity, unit, expiry) or delete it,
-  adjust quantities with a stepper, and mark things as **used** when they're gone
-  (used items are archived, not deleted).
+  and adjust quantities with a stepper.
+- **Shopping list** — crossing an item off doesn't discard it: it moves to **The
+  List** tab as something *to buy*. Tap **Got it** to put it back in the fridge, or
+  remove it. The list also has a **Running low** section for items at/under a
+  low-stock threshold, so you can add them before they run out.
 - **Item photos** — give any item a picture: **snap/choose one** (downscaled to a
   small thumbnail and stored on-device) or **auto-fetch by name** from Open Food
   Facts (keyless, best for packaged groceries; needs internet). The photo shows on
-  the item's tile, falling back to a monogram when there's none.
+  the item's tile, falling back to a monogram with a small camera hint when there's
+  none. You can attach a photo per row while reviewing a scanned receipt, too.
 - **Scan a receipt** — snap (or upload) a grocery receipt and it's read **on your
   device** with Tesseract.js OCR; the detected items become an editable list you
   review — tick what to keep, fix names, set the category, and adjust a per-item

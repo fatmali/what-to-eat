@@ -4,6 +4,7 @@ import { useNotifications } from './hooks/useNotifications.js'
 import { needsAttention } from './lib/expiry.js'
 import { FridgeView } from './components/FridgeView.jsx'
 import { RecipesView } from './components/RecipesView.jsx'
+import { ShoppingView } from './components/ShoppingView.jsx'
 import { AddItemSheet } from './components/AddItemSheet.jsx'
 import { ScanReceiptSheet } from './components/ScanReceiptSheet.jsx'
 import { AlertBanner } from './components/AlertBanner.jsx'
@@ -29,6 +30,7 @@ export default function App() {
     () => fridge.active.filter(needsAttention).length,
     [fridge.active],
   )
+  const toBuyCount = fridge.used.length
 
   const today = DATE_FMT.format(new Date()).toUpperCase()
 
@@ -74,6 +76,15 @@ export default function App() {
             />
           </>
         )}
+        {tab === 'shopping' && (
+          <ShoppingView
+            used={fridge.used}
+            active={fridge.active}
+            onRestock={fridge.restock}
+            onRemove={fridge.removeItem}
+            onCrossOff={fridge.markUsed}
+          />
+        )}
         {tab === 'recipes' && <RecipesView />}
       </main>
 
@@ -106,6 +117,14 @@ export default function App() {
           >
             <span className="foot__label">The Ledger</span>
             {attentionCount > 0 && <span className="foot__badge">{attentionCount}</span>}
+          </button>
+          <button
+            className={`foot ${tab === 'shopping' ? 'foot--on' : ''}`}
+            onClick={() => setTab('shopping')}
+            aria-current={tab === 'shopping'}
+          >
+            <span className="foot__label">The List</span>
+            {toBuyCount > 0 && <span className="foot__badge foot__badge--soft">{toBuyCount}</span>}
           </button>
           <button
             className={`foot ${tab === 'recipes' ? 'foot--on' : ''}`}

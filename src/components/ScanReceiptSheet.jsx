@@ -3,6 +3,8 @@ import { CATEGORY_ORDER, CATEGORIES } from '../lib/constants.js'
 import { recognizeText } from '../lib/ocr.js'
 import { parseReceipt } from '../lib/receipt.js'
 import { isoInDays, todayISO } from '../lib/expiry.js'
+import { fileToThumbnail } from '../lib/image.js'
+import { CameraIcon } from './CameraIcon.jsx'
 
 let uid = 0
 
@@ -18,6 +20,8 @@ export function ScanReceiptSheet({ open, onClose, onAdd }) {
   const [rows, setRows] = useState([])
   const [error, setError] = useState('')
   const fileRef = useRef(null)
+  const photoRef = useRef(null)
+  const photoForId = useRef(null)
 
   useEffect(() => {
     if (open) {
@@ -69,6 +73,7 @@ export function ScanReceiptSheet({ open, onClose, onAdd }) {
             category: 'food',
             quantity: it.quantity,
             expiration: isoInDays(DEFAULT_SHELF_DAYS),
+            image: '',
           }))
         return [...prev, ...fresh]
       })
@@ -86,6 +91,23 @@ export function ScanReceiptSheet({ open, onClose, onAdd }) {
 
   const patch = (id, next) => setRows((rs) => rs.map((r) => (r.id === id ? { ...r, ...next } : r)))
   const removeRow = (id) => setRows((rs) => rs.filter((r) => r.id !== id))
+
+  const openPhoto = (id) => {
+    photoForId.current = id
+    photoRef.current?.click()
+  }
+  const onRowPhoto = async (e) => {
+    const file = e.target.files?.[0]
+    e.target.value = ''
+    const id = photoForId.current
+    if (!file || id == null) return
+    try {
+      const thumb = await fileToThumbnail(file)
+      patch(id, { image: thumb })
+    } catch {
+      /* ignore a bad image */
+    }
+  }
   const cycleCat = (id) =>
     setRows((rs) =>
       rs.map((r) => {
@@ -104,6 +126,7 @@ export function ScanReceiptSheet({ open, onClose, onAdd }) {
         quantity: r.quantity,
         unit: 'pcs',
         expiration: r.expiration || '',
+        image: r.image || '',
       })
     }
     onClose()
@@ -136,6 +159,7 @@ export function ScanReceiptSheet({ open, onClose, onAdd }) {
           onChange={onPick}
           hidden
         />
+        <input ref={photoRef} type="file" accept="image/*" capture="environment" onChange={onRowPhoto} hidden />
 
         {phase === 'intro' && (
           <div className="scan-intro">
@@ -190,6 +214,17 @@ export function ScanReceiptSheet({ open, onClose, onAdd }) {
                         aria-label={r.include ? `Exclude ${r.name}` : `Include ${r.name}`}
                       >
                         {r.include ? '✓' : ''}
+                      </button>
+                      <button
+                        className={`scan-photo ${r.image ? 'scan-photo--has' : ''}`}
+                        onClick={() => openPhoto(r.id)}
+                        aria-label={`Add a photo for ${r.name}`}
+                      >
+                        {r.image ? (
+                          <img src={r.image} alt="" />
+                        ) : (
+                          <CameraIcon className="scan-photo__icon" />
+                        )}
                       </button>
                       <input
                         className="scan-name"

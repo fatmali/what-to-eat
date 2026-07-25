@@ -7,6 +7,9 @@ export const NOTIFY_PREF_KEY = 'whattoeat.notifyEnabled.v1'
 // Items expiring within this many days count as "expiring soon".
 export const SOON_THRESHOLD_DAYS = 3
 
+// Active items with quantity at or below this count as "running low".
+export const LOW_STOCK_THRESHOLD = 1
+
 export const CATEGORIES = {
   food: { id: 'food', label: 'Food', emoji: '🥦', hint: 'Raw ingredients & groceries' },
   'meal-prep': { id: 'meal-prep', label: 'Meal prep', emoji: '🍱', hint: 'Prepped meals ready to go' },

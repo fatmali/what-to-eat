@@ -56,6 +56,24 @@ export function useFridge() {
     )
   }, [])
 
+  // Mark a shopping-list ("used") item as bought again: back into the fridge,
+  // quantity reset to at least one, expiry cleared (a fresh one, date unknown).
+  const restock = useCallback((id) => {
+    setItems((prev) =>
+      prev.map((it) =>
+        it.id === id
+          ? {
+              ...it,
+              status: 'active',
+              usedAt: undefined,
+              expiration: '',
+              quantity: Math.max(1, Number(it.quantity) || 0),
+            }
+          : it,
+      ),
+    )
+  }, [])
+
   const removeItem = useCallback((id) => {
     setItems((prev) => prev.filter((it) => it.id !== id))
   }, [])
@@ -72,6 +90,7 @@ export function useFridge() {
     changeQuantity,
     markUsed,
     restoreItem,
+    restock,
     removeItem,
     todayISO,
   }
