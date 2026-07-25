@@ -60,7 +60,7 @@ A refined **true-black** interface built for OLED screens:
 ```bash
 npm install
 npm run dev        # start the dev server (PWA enabled in dev)
-npm run build      # production build into dist/
+npm run build      # production build into docs/ (served by GitHub Pages)
 npm run preview    # preview the production build
 ```
 
@@ -72,23 +72,36 @@ Screen** to install it.
 
 ## Deploying to GitHub Pages
 
-The app is a fully static site (no backend), so it serves directly from GitHub
-Pages. Deployment is automated:
+The app is a fully static site (no backend). `npm run build` outputs into
+**`docs/`**, which GitHub Pages can serve directly — no CI required.
 
-1. In the repo, go to **Settings → Pages** and set **Source: GitHub Actions**.
-2. Push to the default branch — the [`Deploy to GitHub Pages`](.github/workflows/deploy.yml)
-   workflow builds the site and publishes it. You can also run it manually from
-   the **Actions** tab (**Run workflow**).
-3. The site goes live at **https://fatmali.github.io/what-to-eat/**.
+One-time setup:
+
+1. In the repo, go to **Settings → Pages**.
+2. Under **Source**, choose **Deploy from a branch**.
+3. Pick the branch (`claude/what-to-eat-pwa-37rpj7`, or `main` after you merge)
+   and folder **`/docs`**, then **Save**.
+4. The site goes live at **https://fatmali.github.io/what-to-eat/**.
+
+To update the deployed site after changing the app:
+
+```bash
+npm run build          # regenerates docs/
+git add docs && git commit -m "Rebuild site" && git push
+```
 
 Notes:
 
 - `vite.config.js` sets `base: '/what-to-eat/'` so assets resolve under the
   project-site subpath. For a **custom domain** or a **user/org page** (served at
   the domain root), build with `VITE_BASE=/ npm run build` instead.
-- A `.nojekyll` file is included so GitHub Pages serves all files as-is.
+- `docs/.nojekyll` is included so GitHub Pages serves all files as-is.
 - The service worker is scoped to `/what-to-eat/`, so the PWA installs and works
   offline from the Pages URL.
+
+> The built `docs/` folder is committed on purpose so Pages can serve it without
+> a build step. If you'd rather not track build output, switch Pages to a
+> GitHub Actions workflow instead (requires Actions to be enabled on the repo).
 
 ## Project structure
 

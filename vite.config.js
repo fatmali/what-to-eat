@@ -7,6 +7,12 @@ export default defineConfig({
   // Served from a GitHub Pages project site: https://fatmali.github.io/what-to-eat/
   // Override with `VITE_BASE=/` (e.g. for a custom domain or user/org page).
   base: process.env.VITE_BASE ?? '/what-to-eat/',
+  // Build into docs/ so GitHub Pages can serve it directly ("Deploy from a
+  // branch" → /docs) without any CI.
+  build: {
+    outDir: 'docs',
+    emptyOutDir: true,
+  },
   plugins: [
     react(),
     VitePWA({
