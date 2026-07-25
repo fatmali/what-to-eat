@@ -19,6 +19,7 @@ export function useFridge() {
       quantity: Number(data.quantity) || 1,
       unit: data.unit || 'pcs',
       expiration: data.expiration || '',
+      image: data.image || '',
       addedAt: new Date().toISOString(),
       status: 'active',
     }

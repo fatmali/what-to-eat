@@ -10,11 +10,15 @@ export function ItemCard({ item, index = 0, onChangeQty, onMarkUsed, onEdit }) {
   return (
     <li className={`entry entry--${item.category}`} style={{ '--i': index }}>
       <button
-        className="entry__mono"
+        className={`entry__mono ${item.image ? 'entry__mono--photo' : ''}`}
         onClick={() => onEdit(item)}
         aria-label={`Edit ${item.name}`}
       >
-        {initial}
+        {item.image ? (
+          <img className="entry__photo" src={item.image} alt="" loading="lazy" />
+        ) : (
+          initial
+        )}
       </button>
 
       <div className="entry__col">

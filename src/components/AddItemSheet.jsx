@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { CATEGORY_ORDER, CATEGORIES, UNITS } from '../lib/constants.js'
 import { todayISO } from '../lib/expiry.js'
+import { fileToThumbnail, urlToThumbnail, findFoodImage } from '../lib/image.js'
 
 const empty = {
   name: '',
@@ -8,6 +9,7 @@ const empty = {
   quantity: '1',
   unit: 'pcs',
   expiration: '',
+  image: '',
 }
 
 // A bottom-sheet "ticket" for writing a new item into the ledger — or editing
@@ -15,10 +17,15 @@ const empty = {
 export function AddItemSheet({ open, onClose, onAdd, item = null, onSave, onDelete }) {
   const editing = Boolean(item)
   const [form, setForm] = useState(empty)
+  const [photoBusy, setPhotoBusy] = useState(false)
+  const [photoMsg, setPhotoMsg] = useState('')
   const nameRef = useRef(null)
+  const photoRef = useRef(null)
 
   useEffect(() => {
     if (!open) return
+    setPhotoMsg('')
+    setPhotoBusy(false)
     setForm(
       item
         ? {
@@ -27,6 +34,7 @@ export function AddItemSheet({ open, onClose, onAdd, item = null, onSave, onDele
             quantity: String(item.quantity ?? 1),
             unit: item.unit || 'pcs',
             expiration: item.expiration || '',
+            image: item.image || '',
           }
         : empty,
     )
@@ -45,6 +53,49 @@ export function AddItemSheet({ open, onClose, onAdd, item = null, onSave, onDele
 
   const set = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }))
 
+  const onPhoto = async (e) => {
+    const file = e.target.files?.[0]
+    e.target.value = ''
+    if (!file) return
+    setPhotoMsg('')
+    setPhotoBusy(true)
+    try {
+      const thumb = await fileToThumbnail(file)
+      setForm((f) => ({ ...f, image: thumb }))
+    } catch {
+      setPhotoMsg("Couldn't use that image.")
+    } finally {
+      setPhotoBusy(false)
+    }
+  }
+
+  const onFind = async () => {
+    if (!form.name.trim()) {
+      nameRef.current?.focus()
+      return
+    }
+    setPhotoMsg('')
+    setPhotoBusy(true)
+    try {
+      const url = await findFoodImage(form.name)
+      if (!url) {
+        setPhotoMsg('No photo found — try snapping one.')
+        return
+      }
+      let stored = url
+      try {
+        stored = await urlToThumbnail(url)
+      } catch {
+        /* keep the remote URL if it can't be inlined */
+      }
+      setForm((f) => ({ ...f, image: stored }))
+    } catch {
+      setPhotoMsg('Could not search (offline?).')
+    } finally {
+      setPhotoBusy(false)
+    }
+  }
+
   const submit = (e) => {
     e.preventDefault()
     if (!form.name.trim()) {
@@ -58,6 +109,7 @@ export function AddItemSheet({ open, onClose, onAdd, item = null, onSave, onDele
         quantity: Number(form.quantity) || 0,
         unit: form.unit,
         expiration: form.expiration,
+        image: form.image,
       })
     } else {
       onAdd(form)
@@ -84,6 +136,51 @@ export function AddItemSheet({ open, onClose, onAdd, item = null, onSave, onDele
         <div className="ticket__head">
           <h2 className="ticket__title">{editing ? 'Edit entry' : 'New entry'}</h2>
           <span className="ticket__no">{editing ? 'Update' : todayISO()}</span>
+        </div>
+
+        <div className="photo-field">
+          <div className={`photo-preview ${photoBusy ? 'photo-preview--busy' : ''}`}>
+            {form.image ? (
+              <img className="photo-preview__img" src={form.image} alt="" />
+            ) : (
+              <span className="photo-preview__placeholder" aria-hidden="true">
+                {photoBusy ? '' : '🍎'}
+              </span>
+            )}
+            {photoBusy && <span className="photo-preview__spin" aria-hidden="true" />}
+          </div>
+          <div className="photo-actions">
+            <button
+              type="button"
+              className="photo-btn"
+              onClick={() => photoRef.current?.click()}
+              disabled={photoBusy}
+            >
+              {form.image ? 'Change photo' : 'Take / choose photo'}
+            </button>
+            <button type="button" className="photo-btn" onClick={onFind} disabled={photoBusy}>
+              Find photo by name
+            </button>
+            {form.image && (
+              <button
+                type="button"
+                className="photo-remove"
+                onClick={() => setForm((f) => ({ ...f, image: '' }))}
+                disabled={photoBusy}
+              >
+                Remove photo
+              </button>
+            )}
+            {photoMsg && <span className="photo-msg">{photoMsg}</span>}
+          </div>
+          <input
+            ref={photoRef}
+            type="file"
+            accept="image/*"
+            capture="environment"
+            onChange={onPhoto}
+            hidden
+          />
         </div>
 
         <label className="field">

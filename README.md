@@ -12,6 +12,10 @@ always know what to eat — and never let food quietly expire in the back again.
   name to edit** everything (name, category, quantity, unit, expiry) or delete it,
   adjust quantities with a stepper, and mark things as **used** when they're gone
   (used items are archived, not deleted).
+- **Item photos** — give any item a picture: **snap/choose one** (downscaled to a
+  small thumbnail and stored on-device) or **auto-fetch by name** from Open Food
+  Facts (keyless, best for packaged groceries; needs internet). The photo shows on
+  the item's tile, falling back to a monogram when there's none.
 - **Scan a receipt** — snap (or upload) a grocery receipt and it's read **on your
   device** with Tesseract.js OCR; the detected items become an editable list you
   review — tick what to keep, fix names, set the category, and adjust a per-item
